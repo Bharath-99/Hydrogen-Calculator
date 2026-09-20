@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#0B1628"/>
+<title>HydroCalc — Hydrogen Engineering Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F8; --card:#fff; --border:#DDE3EF;
+  --shadow:0 2px 10px rgba(11,22,40,.07);
+  --green:#00B37A; --green-d:#007A54; --green-l:#E6F7F2;
+  --blue:#2B7EFB;  --blue-l:#EBF2FF;
+  --amber:#F5A300; --amber-l:#FFF7E0;
+  --red:#E53E5D;   --red-l:#FEECF0;
+  --purple:#7B3CE8;--purple-l:#F2EEFF;
+  --teal:#0DBCB9;  --teal-l:#E6FAFA;
+  --dark:#0B1628;  --dark2:#142036;
+  --t1:#0D1F35; --t2:#4A5A72; --t3:#8C9BAE; --t4:#B8C4D4;
+  --r:14px; --r2:10px; --r3:8px;
+  --ff:'Outfit',-apple-system,sans-serif;
+  --fm:'Space Mono','Courier New',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh;padding-bottom:3rem}
+input,select,button{font-family:var(--ff)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:#00B37A55;border-radius:4px}
+
+/* Header */
+.hdr{background:var(--dark);padding:16px 20px 14px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#00E0A0,#00B37A);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;letter-spacing:-1.5px;flex-shrink:0;box-shadow:0 4px 12px rgba(0,179,122,.4)}
+.hdr-text h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px;line-height:1.1}
+.hdr-text p{font-size:10px;color:#5DCAA5;margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+
+/* Tabs */
+.nav{background:var(--dark2);display:flex;overflow-x:auto;padding:0 16px;border-bottom:1px solid #1E3050;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.tab-btn{padding:11px 18px;font-size:12px;font-weight:500;color:#5E7894;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s;letter-spacing:.2px}
+.tab-btn:hover{color:#97B4CC}
+.tab-btn.on{color:#00E0A0;border-bottom-color:#00E0A0;font-weight:600}
+
+/* Body */
+.body{padding:20px 16px;max-width:900px;margin:0 auto}
+.sec{display:none}.sec.on{display:block}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:20px 22px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-hdr{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.card-hdr h3{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.chip{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:99px}
+
+/* Form */
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.col{display:flex;flex-direction:column;gap:5px;flex:1;min-width:120px}
+.col2{display:flex;flex-direction:column;gap:5px;flex:2;min-width:200px}
+.fld{padding:10px 12px;font-size:14px;border-radius:var(--r3);border:1.5px solid var(--border);background:#F8FAFD;color:var(--t1);width:100%;transition:border .15s,box-shadow .15s;-webkit-appearance:none}
+.fld:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(0,179,122,.12);background:#fff}
+select.fld{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238C9BAE'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer}
+.lbl{font-size:11px;font-weight:600;color:var(--t2);letter-spacing:.3px}
+
+/* Pills */
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:500;border:1.5px solid var(--border);background:var(--bg);color:var(--t2);cursor:pointer;transition:all .15s}
+.pill.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+
+/* Type grid */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
+.tcard{padding:11px 12px;border-radius:var(--r2);cursor:pointer;text-align:center;border:1.5px solid var(--border);background:#F8FAFD;transition:all .18s}
+.tcard .tc-lbl{font-size:12px;font-weight:500;color:var(--t2)}
+.tcard .tc-sub{font-size:9px;color:var(--t3);margin-top:3px}
+.tcard.on .tc-lbl{font-weight:700}
+
+/* Banner */
+.banner{border-radius:var(--r2);padding:11px 14px;font-size:11px;color:var(--t2);line-height:1.6}
+
+/* Divider */
+.div{border-top:1px solid var(--border);margin:14px 0}
+.note{font-size:10px;color:var(--t3);margin-top:6px;line-height:1.5}
+
+/* Mode toggle */
+.mtog{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.mbtn{flex:1;min-width:130px;padding:9px 10px;border-radius:var(--r3);font-size:12px;font-weight:500;border:1.5px solid var(--border);background:#F8FAFD;color:var(--t2);cursor:pointer;transition:all .15s;font-family:var(--ff)}
+.mbtn.on{font-weight:600;border-width:2px}
+
+/* RE grid */
+.regrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px;margin-bottom:12px}
+.recard{padding:8px 10px;border-radius:var(--r2);cursor:pointer;text-align:center;border:1.5px solid var(--border);background:#F8FAFD;transition:all .15s}
+.recard .rc-lbl{font-size:11px;color:var(--t2)}
+.recard .rc-cuf{font-size:9px;color:var(--t3);margin-top:2px}
+.recard.on{border:2px solid var(--green);background:var(--green-l)}
+.recard.on .rc-lbl{color:var(--green-d);font-weight:700}
+
+/* Metrics */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:12px}
+.metric{background:#F8FAFD;border-radius:var(--r2);padding:12px 14px;border-left:3px solid var(--green);transition:transform .1s}
+.metric:hover{transform:translateY(-1px)}
+.mval{font-size:22px;font-weight:700;font-family:var(--fm);color:var(--t1);line-height:1.2}
+.munit{font-size:10px;color:var(--t2);margin-top:2px;font-weight:600}
+.mlbl{font-size:10px;color:var(--t3);margin-top:4px}
+
+/* Result rows */
+.rrow{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid #F0F3FA}
+.rrow:last-child{border-bottom:none}
+.rlbl{font-size:13px;color:var(--t2)}
+.rval{font-size:14px;font-weight:600;font-family:var(--fm);color:var(--t1);text-align:right}
+.rsub{font-size:10px;font-weight:400;color:var(--t3);display:block;margin-top:2px}
+
+/* Mass-Vol boxes */
+.mv-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px}
+.mv-box{background:var(--bg);border-radius:var(--r2);padding:14px 16px;border:1px solid var(--border)}
+.mv-box .mv-cond{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.mv-box .mv-val{font-size:18px;font-weight:700;font-family:var(--fm);color:var(--t1)}
+.mv-box .mv-unit{font-size:11px;color:var(--t2);margin-left:4px}
+.mv-box .mv-sub{font-size:11px;color:var(--t3);margin-top:4px}
+
+/* ── Energy-specific styles ── */
+.en-hero{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.en-hero-box{border-radius:var(--r2);padding:16px 18px;border:2px solid}
+.en-h-lhv{border-color:var(--blue);background:var(--blue-l)}
+.en-h-hhv{border-color:var(--green);background:var(--green-l)}
+.en-h-tag{font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+.en-h-name{font-size:11px;color:var(--t2);margin-bottom:10px}
+.en-h-per-kg{font-size:11px;font-weight:600;color:var(--t2);margin-top:4px;padding-top:8px;border-top:1px solid rgba(0,0,0,.08)}
+.en-h-total{font-size:26px;font-weight:700;font-family:var(--fm);line-height:1.1}
+.en-h-unit{font-size:13px;font-weight:500;margin-left:3px}
+
+.etable{width:100%;border-collapse:collapse;font-size:13px}
+.etable th{text-align:left;font-size:9px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--t3);padding:8px 10px;border-bottom:2px solid var(--border)}
+.etable td{padding:9px 10px;border-bottom:1px solid #F0F3FA;font-family:var(--fm);font-size:12px}
+.etable tr:last-child td{border-bottom:none}
+.etable tr:hover td{background:#F8FAFD}
+.etable .unit-col{font-family:var(--ff);color:var(--t2);font-size:12px;font-weight:600;font-family:initial}
+.etable .perkg{color:var(--t3);font-size:11px}
+.etable .lhv-col{color:var(--blue);font-weight:700}
+.etable .hhv-col{color:var(--green-d);font-weight:700}
+
+/* NPV cards */
+.npv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.npv-card{border-radius:var(--r2);padding:14px 16px;text-align:center;border:2px solid}
+.npv-card .nc-lbl{font-size:9px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:6px}
+.npv-card .nc-val{font-size:20px;font-weight:700;font-family:var(--fm)}
+.npv-card .nc-unit{font-size:10px;font-weight:500;margin-top:2px}
+.nc-npv{border-color:var(--purple);background:var(--purple-l)}
+.nc-npv .nc-lbl,.nc-npv .nc-unit{color:var(--purple)}
+.nc-npv .nc-val{color:var(--purple)}
+.nc-irr{border-color:var(--green);background:var(--green-l)}
+.nc-irr .nc-lbl,.nc-irr .nc-unit{color:var(--green-d)}
+.nc-irr .nc-val{color:var(--green-d)}
+.nc-pb{border-color:var(--amber);background:var(--amber-l)}
+.nc-pb .nc-lbl,.nc-pb .nc-unit{color:var(--amber)}
+.nc-pb .nc-val{color:var(--amber)}
+
+/* Breakeven table */
+.be-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
+.be-table th{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t3);padding:7px 10px;border-bottom:2px solid var(--border);text-align:left}
+.be-table td{padding:8px 10px;border-bottom:1px solid #F0F3FA;font-family:var(--fm);font-size:12px}
+.be-table tr:last-child td{border-bottom:none}
+.be-table .be-yr{font-weight:700;color:var(--t1)}
+.be-table .be-px{font-weight:700;color:var(--blue)}
+.be-table .be-ok{color:var(--green-d);font-weight:700}
+.be-table .be-warn{color:var(--amber);font-weight:700}
+.be-table .be-band{background:rgba(0,179,122,.07)}
+
+/* LCOH/LCOE display */
+.lcox{background:var(--dark);border-radius:var(--r2);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.lcox .lcx-l{font-size:11px;color:#5DCAA5;font-weight:500}
+.lcox .lcx-n{font-size:22px;font-weight:700;font-family:var(--fm);color:#fff}
+.lcox .lcx-u{font-size:12px;color:#5DCAA5;margin-left:6px}
+
+.ctotal{background:var(--blue-l);border-radius:var(--r2);padding:12px 16px;margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+.ctotal .ctl{font-size:12px;color:var(--blue);font-weight:600}
+.ctotal .ctv{font-size:20px;font-weight:700;font-family:var(--fm);color:var(--blue)}
+
+/* Chart */
+.chart-wrap{background:#F8FAFD;border-radius:var(--r2);border:1px solid var(--border);overflow:hidden;position:relative;margin-top:10px}
+.chart-title{padding:12px 16px 4px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t3)}
+.chart-legend{display:flex;gap:14px;padding:0 16px 8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t2)}
+.legend-dot{width:10px;height:3px;border-radius:2px}
+canvas{display:block;width:100%;height:280px}
+
+/* Sankey */
+.sankey{height:40px;border-radius:var(--r3);overflow:hidden;display:flex;background:#EEF1F8;margin-top:12px}
+.sk-e{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:width .4s;white-space:nowrap;overflow:hidden}
+.sk-h{background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:width .4s;white-space:nowrap;overflow:hidden}
+.sk-l{flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t3)}
+
+@media(max-width:520px){
+  .mgrid{grid-template-columns:repeat(2,1fr)}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .npv-grid{grid-template-columns:1fr}
+  .mv-results{grid-template-columns:1fr}
+  .en-hero{grid-template-columns:1fr}
+  .col2{min-width:100%}
+  .card{padding:16px 14px}
+  .mval{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo">H₂</div>
+  <div class="hdr-text">
+    <h1>HydroCalc</h1>
+    <p>Hydrogen Engineering Suite · v3.1</p>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="tab-btn on" onclick="tab('mv',this)">⇌ Mass ↔ Volume</button>
+  <button class="tab-btn"    onclick="tab('ig',this)">⊙ Ideal Gas</button>
+  <button class="tab-btn"    onclick="tab('en',this)">⚡ Energy Content</button>
+  <button class="tab-btn"    onclick="tab('el',this)">⟶ Electrolyzer</button>
+  <button class="tab-btn"    onclick="tab('fc',this)">⟵ Fuel Cell</button>
+</nav>
+
+<main class="body">
+
+<!-- ══════════════════════ 1. MASS ↔ VOLUME ══════════════════════ -->
+<div id="sec-mv" class="sec on">
+  <div class="card">
+    <div class="card-hdr"><h3>Mass → Volume</h3><span class="chip" style="background:var(--green-l);color:var(--green-d)">NTP · STP · 20°C · Liquid</span></div>
+    <div class="row">
+      <div class="col2"><label class="lbl">Hydrogen Mass</label><input class="fld" type="number" id="mv-mass" value="1" oninput="calcMV()"/></div>
+      <div class="col"><label class="lbl">Unit</label>
+        <select class="fld" id="mv-mu" onchange="calcMV()">
+          <option>kg</option><option>g</option><option>tonne (metric)</option><option>lb</option><option>lbmol</option>
+        </select>
+      </div>
+    </div>
+    <div class="mv-results" id="mv-vol-res"></div>
+    <p class="note">H₂ molar mass = 2.01588 g/mol | NTP = 0°C, 1 atm | STP = 15°C, 1 atm | Standard = 20°C, 1 atm</p>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><h3>Volume → Mass</h3></div>
+    <div class="row">
+      <div class="col2"><label class="lbl">Hydrogen Volume</label><input class="fld" type="number" id="mv-vol" value="10" oninput="calcVM()"/></div>
+      <div class="col"><label class="lbl">Unit</label>
+        <select class="fld" id="mv-vu" onchange="calcVM()">
+          <option>Nm³ (NTP)</option><option>Sm³ (STP)</option><option>m³ (20°C)</option>
+          <option>L (NTP)</option><option>Litres (liquid)</option><option>ft³ (NTP)</option>
+        </select>
+      </div>
+    </div>
+    <div class="mv-results" id="mv-mass-res"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ 2. IDEAL GAS ══════════════════════ -->
+<div id="sec-ig" class="sec">
+  <div class="card">
+    <div class="card-hdr"><h3>Ideal Gas Law</h3><span class="chip" style="background:var(--blue-l);color:var(--blue)">PV = ZnRT</span></div>
+    <div class="row">
+      <div class="col"><label class="lbl">Temperature</label><input class="fld" type="number" id="ig-tc" value="25" oninput="calcIG()"/></div>
+      <div class="col"><label class="lbl">Temp unit</label><select class="fld" id="ig-tunit" onchange="calcIG()"><option>°C</option><option>°F</option><option>K</option></select></div>
+      <div class="col"><label class="lbl">Pressure</label><input class="fld" type="number" id="ig-p" value="1" oninput="calcIG()"/></div>
+      <div class="col"><label class="lbl">Pressure unit</label><select class="fld" id="ig-punit" onchange="calcIG()"><option>bar</option><option>MPa</option><option>kPa</option><option>psi</option><option>atm</option></select></div>
+      <div class="col"><label class="lbl">Compressibility Z</label><input class="fld" type="number" id="ig-z" value="1" step="0.001" oninput="calcIG()"/></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="col"><label class="lbl">Gas</label>
+        <select class="fld" id="ig-gas" onchange="setGas()">
+          <option value="2.01588">H₂ — Hydrogen</option><option value="31.999">O₂ — Oxygen</option>
+          <option value="28.014">N₂ — Nitrogen</option><option value="16.043">CH₄ — Methane</option>
+          <option value="44.01">CO₂</option><option value="28.97">Air</option><option value="custom">Custom →</option>
+        </select>
+      </div>
+      <div class="col"><label class="lbl">Mol. Weight (g/mol)</label><input class="fld" type="number" id="ig-mw" value="2.01588" step="0.001" oninput="calcIG()"/></div>
+    </div>
+    <div class="div"></div>
+    <p class="lbl" style="margin-bottom:10px">Known quantity — solve for the rest</p>
+    <div class="mtog">
+      <button class="mbtn on" id="igm-mass" onclick="setIGMode('mass',this)" style="border-color:var(--blue);color:var(--blue)">Mass (kg)</button>
+      <button class="mbtn"    id="igm-vol"  onclick="setIGMode('vol',this)">Volume (m³)</button>
+      <button class="mbtn"    id="igm-mol"  onclick="setIGMode('mol',this)">Moles (mol)</button>
+      <button class="mbtn"    id="igm-den"  onclick="setIGMode('den',this)">Density (kg/m³)</button>
+    </div>
+    <div class="row">
+      <div class="col2"><label class="lbl" id="ig-knlbl">Mass (kg)</label><input class="fld" type="number" id="ig-kn" value="1" oninput="calcIG()"/></div>
+    </div>
+  </div>
+  <div class="card" id="ig-out" style="display:none">
+    <div class="card-hdr"><h3 id="ig-out-title">Results</h3></div>
+    <div class="mgrid" id="ig-metrics"></div>
+    <div class="div"></div>
+    <div class="card-hdr"><h3>Reference Condition Volumes (same mass)</h3></div>
+    <div id="ig-refrows"></div>
+    <p class="note">Z=1 for ideal / low-pressure. H₂ at 350 bar,25°C: Z≈1.07 | at 700 bar,25°C: Z≈1.44</p>
+  </div>
+</div>
+
+<!-- ══════════════════════ 3. ENERGY CONTENT ══════════════════════ -->
+<div id="sec-en" class="sec">
+
+  <div class="card">
+    <div class="card-hdr"><h3>Hydrogen Quantity</h3></div>
+    <div class="mtog" style="margin-bottom:14px">
+      <button class="mbtn on" id="enm-kg"  onclick="setENMode('kg',this)"  style="border-color:var(--green);color:var(--green)">Mass (kg)</button>
+      <button class="mbtn"    id="enm-nm3" onclick="setENMode('nm3',this)">Volume — Nm³ (NTP)</button>
+      <button class="mbtn"    id="enm-sm3" onclick="setENMode('sm3',this)">Volume — Sm³ (STP)</button>
+    </div>
+    <div class="row">
+      <div class="col2"><label class="lbl" id="en-lbl">Hydrogen Mass (kg)</label><input class="fld" type="number" id="en-qty" value="1" oninput="calcEN()"/></div>
+      <div class="col"><label class="lbl">Equivalent in kg</label><input class="fld" id="en-kg-equiv" readonly style="background:#F0F3FA;color:var(--t2)"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Heating Values</h3></div>
+
+    <!-- Per-kg constants row -->
+    <div style="background:#F8FAFD;border-radius:var(--r2);padding:12px 16px;margin-bottom:16px;border:1px solid var(--border)">
+      <p style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Fixed Physical Constants — per kg H₂</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">
+        <div><span style="font-size:11px;color:var(--t2)">LHV</span> <span style="font-size:15px;font-weight:700;font-family:var(--fm);color:var(--blue)">33.33 kWh/kg</span></div>
+        <div><span style="font-size:11px;color:var(--t2)">LHV</span> <span style="font-size:15px;font-weight:700;font-family:var(--fm);color:var(--blue)">120.0 MJ/kg</span></div>
+        <div><span style="font-size:11px;color:var(--t2)">HHV</span> <span style="font-size:15px;font-weight:700;font-family:var(--fm);color:var(--green-d)">39.39 kWh/kg</span></div>
+        <div><span style="font-size:11px;color:var(--t2)">HHV</span> <span style="font-size:15px;font-weight:700;font-family:var(--fm);color:var(--green-d)">141.8 MJ/kg</span></div>
+      </div>
+    </div>
+
+    <!-- Hero totals -->
+    <div class="en-hero" id="en-hero">
+      <div class="en-hero-box en-h-lhv">
+        <div class="en-h-tag" style="color:var(--blue)">LHV — Lower Heating Value</div>
+        <div class="en-h-name" style="color:var(--blue)">Water remains as vapour</div>
+        <div class="en-h-total" id="en-lhv-tot" style="color:var(--blue)">—</div>
+        <div class="en-h-per-kg" id="en-lhv-pke">33.33 kWh per kg</div>
+      </div>
+      <div class="en-hero-box en-h-hhv">
+        <div class="en-h-tag" style="color:var(--green-d)">HHV — Higher Heating Value</div>
+        <div class="en-h-name" style="color:var(--green-d)">Water condenses, extra heat recovered</div>
+        <div class="en-h-total" id="en-hhv-tot" style="color:var(--green-d)">—</div>
+        <div class="en-h-per-kg" id="en-hhv-pke">39.39 kWh per kg</div>
+      </div>
+    </div>
+
+    <!-- Full unit table -->
+    <div class="div"></div>
+    <p class="card-hdr" style="margin-bottom:10px"><h3>All Energy Units</h3></p>
+    <table class="etable">
+      <thead>
+        <tr>
+          <th>Energy Unit</th>
+          <th>Per kg H₂ (LHV)</th>
+          <th>Per kg H₂ (HHV)</th>
+          <th class="lhv-col">Total LHV</th>
+          <th class="hhv-col">Total HHV</th>
+        </tr>
+      </thead>
+      <tbody id="en-tbody"></tbody>
+    </table>
+    <p class="note">Use LHV for combustion engines, electrolyzers, and most engineering calculations. Use HHV when condensing heat recovery is possible (e.g. condensing boilers, fuel cells with heat capture).</p>
+  </div>
+</div>
+
+<!-- ══════════════════════ 4. ELECTROLYZER ══════════════════════ -->
+<div id="sec-el" class="sec">
+  <div class="card">
+    <div class="card-hdr"><h3>Electrolyzer Type</h3></div>
+    <div class="tgrid">
+      <div class="tcard on" id="elt-Alkaline" onclick="selElType('Alkaline')"><div class="tc-lbl">Alkaline (AWE)</div><div class="tc-sub">Commercial</div></div>
+      <div class="tcard"    id="elt-PEM"      onclick="selElType('PEM')"     ><div class="tc-lbl">PEM (PEMWE)</div>  <div class="tc-sub">Commercial</div></div>
+      <div class="tcard"    id="elt-SOEC"     onclick="selElType('SOEC')"    ><div class="tc-lbl">SOEC</div>         <div class="tc-sub">Demonstration</div></div>
+      <div class="tcard"    id="elt-AEM"      onclick="selElType('AEM')"     ><div class="tc-lbl">AEM</div>          <div class="tc-sub">Early Commercial</div></div>
+    </div>
+    <div class="banner" id="el-banner"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Design Parameters</h3></div>
+    <div class="mtog">
+      <button class="mbtn on" id="elm-h2"   onclick="selElMode('h2',this)"   >By H₂ Production (kg/day)</button>
+      <button class="mbtn"    id="elm-stack" onclick="selElMode('stack',this)" >By Stack Size (kW)</button>
+    </div>
+    <div class="row">
+      <div class="col2"><label class="lbl" id="el-ml">H₂ Production Target (kg/day)</label><input class="fld" type="number" id="el-main" value="1000" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Specific Energy (kWh/kg H₂)</label><input class="fld" type="number" id="el-sec" value="55" step="0.5" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">BOP Loss (% of stack)</label><input class="fld" type="number" id="el-bop" value="5" step="0.5" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Plant Availability (%)</label><input class="fld" type="number" id="el-avail" value="95" oninput="calcEl()"/></div>
+    </div>
+    <p class="note" id="el-secnote"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Electricity Source &amp; CUF</h3></div>
+    <div class="regrid" id="el-regrid"></div>
+    <div class="row">
+      <div class="col"><label class="lbl">CUF (fraction)</label><input class="fld" type="number" id="el-cuf" value="0.22" step="0.01" min="0.05" max="0.95" oninput="syncCUF()"/></div>
+      <div class="col"><label class="lbl">CUF (%)</label><input class="fld" type="number" id="el-cufpct" value="22" step="1" min="5" max="95" oninput="syncCUFpct()"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Economics</h3></div>
+    <div class="row">
+      <div class="col"><label class="lbl">Stack CAPEX (USD/kW)</label><input class="fld" type="number" id="el-cs" value="600" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">BOP CAPEX (USD/kW)</label><input class="fld" type="number" id="el-cb" value="200" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Electricity (USD/kWh)</label><input class="fld" type="number" id="el-te" value="0.04" step=".005" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Water (USD/m³)</label><input class="fld" type="number" id="el-tw" value="1.0" step=".1" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Fixed O&M (% CAPEX/yr)</label><input class="fld" type="number" id="el-op" value="3.0" step=".1" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">H₂ Selling Price (USD/kg)</label><input class="fld" type="number" id="el-h2px" value="4.0" step=".1" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Discount Rate (%)</label><input class="fld" type="number" id="el-dr" value="8" step="1" oninput="calcEl()"/></div>
+      <div class="col"><label class="lbl">Project Life (years)</label><input class="fld" type="number" id="el-yr" value="20" oninput="calcEl()"/></div>
+    </div>
+  </div>
+
+  <div class="card"><div class="card-hdr"><h3>System Sizing</h3></div><div class="mgrid" id="el-metrics"></div></div>
+  <div class="card"><div class="card-hdr"><h3>CAPEX Breakdown</h3></div><div id="el-capex"></div></div>
+  <div class="card"><div class="card-hdr"><h3>Annual OPEX &amp; Revenue</h3></div><div id="el-opex"></div></div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Financial Performance</h3></div>
+    <div class="npv-grid" id="el-npvgrid"></div>
+    <div class="div"></div>
+    <p class="card-hdr" style="margin-bottom:8px"><h3>Breakeven Price Sensitivity — 8 to 12 Year Payback Target</h3></p>
+    <p class="note" style="margin-bottom:6px">What H₂ selling price is required to achieve payback within each target year? Based on current OPEX and CAPEX.</p>
+    <div id="el-betable"></div>
+    <div class="div"></div>
+    <div class="chart-wrap">
+      <div class="chart-title">Cumulative Cash Flow — Project Life</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Cumulative Net Cash</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber);height:2px;border-top:2px dashed var(--amber)"></div>Payback point</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue);opacity:.4;width:20px;height:8px;border-radius:2px"></div>8–12 yr target band</div>
+      </div>
+      <canvas id="el-chart"></canvas>
+    </div>
+    <p class="note">Amber dashed line = simple payback point. Blue band = 8–12 year target window. Cumulative cash = Revenue − OPEX, recovering initial CAPEX investment.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════ 5. FUEL CELL ══════════════════════ -->
+<div id="sec-fc" class="sec">
+  <div class="card">
+    <div class="card-hdr"><h3>Fuel Cell Type</h3></div>
+    <div class="tgrid">
+      <div class="tcard on" id="fct-PEMFC" onclick="selFCType('PEMFC')"><div class="tc-lbl">PEMFC</div><div class="tc-sub">Transport / Backup</div></div>
+      <div class="tcard"    id="fct-SOFC"  onclick="selFCType('SOFC')" ><div class="tc-lbl">SOFC</div> <div class="tc-sub">CHP / Industrial</div></div>
+      <div class="tcard"    id="fct-AFC"   onclick="selFCType('AFC')"  ><div class="tc-lbl">AFC</div>  <div class="tc-sub">Space / Special</div></div>
+      <div class="tcard"    id="fct-PAFC"  onclick="selFCType('PAFC')" ><div class="tc-lbl">PAFC</div> <div class="tc-sub">Stationary CHP</div></div>
+      <div class="tcard"    id="fct-MCFC"  onclick="selFCType('MCFC')" ><div class="tc-lbl">MCFC</div> <div class="tc-sub">Large CHP</div></div>
+    </div>
+    <div class="banner" id="fc-banner"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>H₂ Input &amp; Parameters</h3></div>
+    <div class="mtog">
+      <button class="mbtn on" id="fcm-kg"  onclick="selFCMode('kg',this)"  >kg H₂ / hr</button>
+      <button class="mbtn"    id="fcm-nm3" onclick="selFCMode('nm3',this)" >Nm³ H₂ / hr</button>
+      <button class="mbtn"    id="fcm-kw"  onclick="selFCMode('kw',this)"  >Thermal kW (LHV)</button>
+    </div>
+    <div class="row">
+      <div class="col2"><label class="lbl" id="fc-ml">H₂ Flow Rate (kg/hr)</label><input class="fld" type="number" id="fc-inp" value="100" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Electrical Efficiency (%)</label><input class="fld" type="number" id="fc-ee" value="55" min="25" max="80" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Heat Recovery (%)</label><input class="fld" type="number" id="fc-he" value="20" min="0" max="50" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">BOP Parasitic Loss (%)</label><input class="fld" type="number" id="fc-bop" value="3" step="0.5" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Plant Availability (%)</label><input class="fld" type="number" id="fc-av" value="90" oninput="calcFC()"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Economics</h3></div>
+    <div class="row">
+      <div class="col"><label class="lbl">CAPEX (USD/kW net)</label><input class="fld" type="number" id="fc-cx" value="1200" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">H₂ Fuel Cost (USD/kg)</label><input class="fld" type="number" id="fc-h2c" value="5.0" step=".1" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Fixed O&M (% CAPEX/yr)</label><input class="fld" type="number" id="fc-op" value="3.5" step=".1" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Electricity Price (USD/kWh)</label><input class="fld" type="number" id="fc-epx" value="0.12" step=".01" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Heat Revenue (USD/kWh th)</label><input class="fld" type="number" id="fc-hpx" value="0.03" step=".005" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Discount Rate (%)</label><input class="fld" type="number" id="fc-dr" value="8" step="1" oninput="calcFC()"/></div>
+      <div class="col"><label class="lbl">Project Life (years)</label><input class="fld" type="number" id="fc-yr" value="20" oninput="calcFC()"/></div>
+    </div>
+  </div>
+
+  <div class="card"><div class="card-hdr"><h3>Power Output</h3></div>
+    <div class="mgrid" id="fc-metrics"></div>
+    <div class="sankey"><div class="sk-e" id="sk-e"></div><div class="sk-h" id="sk-h"></div><div class="sk-l" id="sk-l">—</div></div>
+    <p class="note" id="fc-snote"></p>
+  </div>
+  <div class="card"><div class="card-hdr"><h3>CAPEX Breakdown</h3></div><div id="fc-capex"></div></div>
+  <div class="card"><div class="card-hdr"><h3>Annual OPEX &amp; Revenue</h3></div><div id="fc-opex"></div></div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>Financial Performance</h3></div>
+    <div class="npv-grid" id="fc-npvgrid"></div>
+    <div class="div"></div>
+    <p class="card-hdr" style="margin-bottom:8px"><h3>Breakeven Price Sensitivity — 8 to 12 Year Payback Target</h3></p>
+    <p class="note" style="margin-bottom:6px">What electricity selling price is required to achieve payback within each target year?</p>
+    <div id="fc-betable"></div>
+    <div class="div"></div>
+    <div class="chart-wrap">
+      <div class="chart-title">Cumulative Cash Flow — Project Life</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Cumulative Net Cash</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Payback point</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue);opacity:.3;width:20px;height:8px;border-radius:2px"></div>8–12 yr band</div>
+      </div>
+      <canvas id="fc-chart"></canvas>
+    </div>
+    <p class="note">Revenue includes electricity + heat sales. Blue shaded band marks the 8–12 year target payback window.</p>
+  </div>
+</div>
+
+</main>
+<div style="text-align:center;padding:1.5rem;font-size:10px;color:var(--t3)">HydroCalc v3.1 — engineering estimates only · verify before use in project design</div>
+
+<script>
+"use strict";
+// ── Physical constants ────────────────────────────────────────
+const H2={LHV_KWH:33.33,HHV_KWH:39.39,LHV_MJ:120.0,HHV_MJ:141.8,MW:2.01588,
+  RHO_NTP:0.08988,RHO_STP:0.08403,RHO_20:0.08375,RHO_LIQ:70.85,WATER:9.0};
+const R_GAS=8.31446;
+
+// ── Electrolyzer & Fuel Cell specs ───────────────────────────
+const EL={
+  Alkaline:{label:"Alkaline (AWE)",color:"#00B37A",bg:"#E6F7F2",sec:55,smin:50,smax:65,cs:600,cb:200,op:3.0,lh:90000,temp:"60–80°C",press:"1–30 bar",desc:"Proven KOH electrolyte. Lowest CAPEX, large scale. Best for steady-state green H₂."},
+  PEM:     {label:"PEM (PEMWE)",   color:"#2B7EFB",bg:"#EBF2FF",sec:53,smin:48,smax:65,cs:900,cb:300,op:3.5,lh:60000,temp:"50–80°C",press:"10–80 bar",desc:"Fast response, high purity H₂. Ideal for variable renewable coupling."},
+  SOEC:    {label:"SOEC (High-Temp)",color:"#E53E5D",bg:"#FEECF0",sec:37,smin:33,smax:45,cs:2000,cb:500,op:4.0,lh:30000,temp:"700–900°C",press:"1–5 bar",desc:"Highest electrical efficiency using steam/waste heat. Best with industrial heat sources."},
+  AEM:     {label:"AEM (Anion Exch.)",color:"#F5A300",bg:"#FFF7E0",sec:54,smin:50,smax:65,cs:700,cb:200,op:3.5,lh:50000,temp:"40–60°C",press:"1–35 bar",desc:"Non-PGM catalysts. PEM-like performance at lower raw material cost."},
+};
+const FC={
+  PEMFC:{label:"PEMFC",color:"#2B7EFB",bg:"#EBF2FF",ee:55,he:20,cx:1200,op:3.5,lh:40000,temp:"60–80°C",app:"Transport/Backup",desc:"Fast start, variable load. Ideal for mobility and distributed backup power."},
+  SOFC: {label:"SOFC", color:"#E53E5D",bg:"#FEECF0",ee:60,he:25,cx:2500,op:4.0,lh:50000,temp:"700–1000°C",app:"CHP/Industrial",desc:"Highest combined efficiency. Tolerates impure H₂. Best for baseload CHP."},
+  AFC:  {label:"AFC",  color:"#00B37A",bg:"#E6F7F2",ee:52,he:20,cx:1000,op:3.0,lh:20000,temp:"60–90°C",app:"Space/Special",desc:"High efficiency in CO₂-free environments. Originally for spacecraft."},
+  PAFC: {label:"PAFC", color:"#7B3CE8",bg:"#F2EEFF",ee:45,he:30,cx:3000,op:3.5,lh:60000,temp:"150–200°C",app:"Stationary CHP",desc:"Robust stationary distributed generation. High-quality 200°C heat output."},
+  MCFC: {label:"MCFC", color:"#F5A300",bg:"#FFF7E0",ee:50,he:30,cx:3500,op:4.0,lh:40000,temp:"600–700°C",app:"Large CHP",desc:"MW-scale with excellent heat recovery. Best for industrial CHP."},
+};
+const RE={"Solar PV":0.22,"Wind (Onshore)":0.35,"Wind (Offshore)":0.45,"Solar+Wind":0.48,"Hydro":0.60,"Grid/Firm":0.85};
+
+// ── State ─────────────────────────────────────────────────────
+let elType="Alkaline",elMode="h2",elRE="Solar PV";
+let fcType="PEMFC",fcMode="kg";
+let igMode="mass",enMode="kg";
+
+// ── Helpers ───────────────────────────────────────────────────
+const g=id=>document.getElementById(id);
+const gv=id=>parseFloat(g(id)?.value)||0;
+function fmt(n,d=2){
+  if(n==null||isNaN(n)||!isFinite(n))return"—";
+  const x=Number(n);
+  if(Math.abs(x)>=1e9)return(x/1e9).toFixed(2)+"B";
+  if(Math.abs(x)>=1e6)return(x/1e6).toFixed(2)+"M";
+  if(Math.abs(x)<0.00001&&x!==0)return x.toExponential(2);
+  return parseFloat(x.toFixed(d)).toLocaleString();
+}
+function fmtM(n){
+  if(n==null||isNaN(n))return"—";
+  const x=Number(n);
+  if(x>=1e9)return"$"+(x/1e9).toFixed(2)+"B";
+  if(x>=1e6)return"$"+(x/1e6).toFixed(2)+"M";
+  if(x>=1000)return"$"+(x/1000).toFixed(1)+"k";
+  return"$"+x.toFixed(0);
+}
+function fmtK(n){
+  const x=Number(n);
+  if(Math.abs(x)>=1e9)return(x/1e9).toFixed(1)+"B";
+  if(Math.abs(x)>=1e6)return(x/1e6).toFixed(1)+"M";
+  if(Math.abs(x)>=1000)return(x/1000).toFixed(0)+"k";
+  return x.toFixed(0);
+}
+const mHtml=(val,unit,lbl,col="#00B37A")=>
+  `<div class="metric" style="border-left-color:${col}"><div class="mval">${val}</div><div class="munit">${unit}</div><div class="mlbl">${lbl}</div></div>`;
+const rHtml=(lbl,val,sub="")=>
+  `<div class="rrow"><span class="rlbl">${lbl}</span><span class="rval">${val}<span class="rsub">${sub}</span></span></div>`;
+
+function tab(id,btn){
+  document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("on"));
+  g("sec-"+id).classList.add("on");btn.classList.add("on");
+  if(id==="el")calcEl();
+  if(id==="fc")calcFC();
+}
+
+// ── NPV / IRR helpers ──────────────────────────────────────────
+function calcNPV(capex,annCF,rate,years){
+  let npv=-capex;
+  for(let t=1;t<=years;t++)npv+=annCF/Math.pow(1+rate,t);
+  return npv;
+}
+function calcIRR(capex,annCF,years){
+  if(annCF<=0||capex<=0||annCF*years<capex)return null;
+  const f=r=>{let s=-capex;for(let t=1;t<=years;t++)s+=annCF/Math.pow(1+r,t);return s;};
+  let lo=0,hi=10;
+  if(f(lo)<0)return null;
+  for(let i=0;i<200;i++){const m=(lo+hi)/2;if(Math.abs(hi-lo)<1e-9)return m;f(m)>0?lo=m:hi=m;}
+  return(lo+hi)/2;
+}
+function simplePayback(capex,annCF){return annCF>0?capex/annCF:null;}
+
+// Required annual revenue for a given payback target (simple)
+function reqRevForPB(capex,annCost,targetPB){
+  return capex/targetPB+annCost; // annRev so that (annRev-annCost)*targetPB = capex
+}
+
+function npvHtml(npv,irr,pb,projYr,lcoxLabel,lcox,lcoxUnit){
+  const npvOk=npv!=null&&!isNaN(npv),irrOk=irr!=null&&!isNaN(irr),pbOk=pb!=null&&pb<=projYr;
+  return `
+    <div class="npv-card nc-npv"><div class="nc-lbl">NPV</div><div class="nc-val">${npvOk?fmtM(npv):"—"}</div><div class="nc-unit">${npvOk?(npv>=0?"✓ Positive — viable":"✗ Negative — review"):"Insufficient revenue"}</div></div>
+    <div class="npv-card nc-irr"><div class="nc-lbl">IRR</div><div class="nc-val">${irrOk?(irr*100).toFixed(1)+"%":"< 0%"}</div><div class="nc-unit">Internal Rate of Return</div></div>
+    <div class="npv-card nc-pb"><div class="nc-lbl">Payback</div><div class="nc-val">${pbOk?pb.toFixed(1)+" yr":">${projYr} yr"}</div><div class="nc-unit">${pbOk&&pb<=12&&pb>=8?"✓ Within 8–12 yr target":pbOk&&pb<8?"✓ Better than 8 yr":"Exceeds 12 yr target"}</div></div>
+    <div class="lcox" style="grid-column:1/-1"><div><div class="lcx-l">${lcoxLabel}</div></div><div><span class="lcx-n">${lcox}</span><span class="lcx-u">${lcoxUnit}</span></div></div>`;
+}
+
+// Breakeven sensitivity table
+function beTableHtml(capex,annCost,annH2orKWh,colHdr,priceUnit,annRevFn,currentPB){
+  const targets=[8,9,10,11,12];
+  let html=`<table class="be-table"><thead><tr>
+    <th>Target Payback</th><th>${colHdr} needed</th><th>Annual Revenue needed</th><th>Status at current price</th>
+  </tr></thead><tbody>`;
+  targets.forEach(yr=>{
+    const reqRev=reqRevForPB(capex,annCost,yr);
+    const reqPx=annH2orKWh>0?reqRev/annH2orKWh:null;
+    const inBand=yr>=8&&yr<=12;
+    const curOk=currentPB!=null&&currentPB<=yr;
+    html+=`<tr class="${inBand?"be-band":""}">
+      <td class="be-yr">${yr} years</td>
+      <td class="be-px">${reqPx!=null?"$"+fmt(reqPx,2)+" "+priceUnit:"—"}</td>
+      <td>${fmtM(reqRev)}/yr</td>
+      <td class="${curOk?"be-ok":"be-warn"}">${curOk?"✓ Achieved at current price":"✗ Need higher price"}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table>`;
+  return html;
+}
+
+
+// ══════════════════════════════════════════════════
+// CHART
+// ══════════════════════════════════════════════════
+function drawChart(canvasId,capex,annRevenue,annCost,projYr,accentColor,pb8,pb12){
+  const canvas=g(canvasId);if(!canvas)return;
+  const DPR=window.devicePixelRatio||1;
+  const W=canvas.parentElement.offsetWidth||600;
+  const H=280;
+  canvas.width=W*DPR;canvas.height=H*DPR;
+  canvas.style.width=W+"px";canvas.style.height=H+"px";
+  const ctx=canvas.getContext("2d");
+  ctx.scale(DPR,DPR);
+
+  const pad={top:30,right:24,bottom:48,left:74};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const annCF=annRevenue-annCost;
+  const N=projYr+1;
+  const cum=Array.from({length:N},(_,t)=>t===0?-capex:-capex+annCF*t);
+  const minY=Math.min(...cum,0),maxY=Math.max(...cum,0);
+  const pad5=(maxY-minY)*0.06||1000;
+  const yMin=minY-pad5,yMax=maxY+pad5,yR=yMax-yMin||1;
+  const xS=i=>pad.left+(i/(N-1))*cW;
+  const yS=v=>pad.top+cH-((v-yMin)/yR)*cH;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Grid
+  for(let i=0;i<=5;i++){
+    const yv=yMin+(yMax-yMin)*(1-i/5);
+    const yp=pad.top+(i/5)*cH;
+    if(i>0){ctx.strokeStyle="#E8ECF4";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.left,yp);ctx.lineTo(pad.left+cW,yp);ctx.stroke();}
+    ctx.fillStyle="#9CA3AF";ctx.font=`10px 'Space Mono',monospace`;ctx.textAlign="right";
+    ctx.fillText(fmtK(yv),pad.left-8,yp+4);
+  }
+
+  // X labels
+  ctx.fillStyle="#9CA3AF";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";
+  const step=Math.max(1,Math.floor(N/8));
+  for(let i=0;i<N;i+=step) ctx.fillText("Yr "+i,xS(i),pad.top+cH+18);
+  ctx.fillText("Yr "+projYr,xS(N-1),pad.top+cH+18);
+
+  // 8–12 year band (blue shaded)
+  if(pb8!==null&&pb12!==null){
+    const x8=xS(Math.min(8,projYr)),x12=xS(Math.min(12,projYr));
+    ctx.fillStyle="rgba(43,126,251,0.10)";
+    ctx.fillRect(x8,pad.top,x12-x8,cH);
+    ctx.strokeStyle="rgba(43,126,251,0.25)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(x8,pad.top);ctx.lineTo(x8,pad.top+cH);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x12,pad.top);ctx.lineTo(x12,pad.top+cH);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle="rgba(43,126,251,0.7)";ctx.font="9px 'Outfit',sans-serif";ctx.textAlign="center";
+    ctx.fillText("8 yr",x8,pad.top+8);ctx.fillText("12 yr",x12,pad.top+8);
+  }
+
+  // Zero line
+  const y0=yS(0);
+  ctx.strokeStyle="#374151";ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(pad.left,y0);ctx.lineTo(pad.left+cW,y0);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Area fill
+  const grad=ctx.createLinearGradient(0,pad.top,0,pad.top+cH);
+  grad.addColorStop(0,accentColor+"55");grad.addColorStop(1,accentColor+"08");
+  ctx.beginPath();
+  cum.forEach((v,i)=>i===0?ctx.moveTo(xS(i),yS(v)):ctx.lineTo(xS(i),yS(v)));
+  ctx.lineTo(xS(N-1),yS(0));ctx.lineTo(xS(0),yS(0));
+  ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+
+  // Curve
+  ctx.beginPath();
+  cum.forEach((v,i)=>i===0?ctx.moveTo(xS(i),yS(v)):ctx.lineTo(xS(i),yS(v)));
+  ctx.strokeStyle=accentColor;ctx.lineWidth=2.5;ctx.lineJoin="round";ctx.stroke();
+
+  // Payback marker
+  let pbX=null,pbYr=null;
+  for(let i=1;i<cum.length;i++){
+    if(cum[i-1]<0&&cum[i]>=0){
+      const frac=-cum[i-1]/(cum[i]-cum[i-1]);
+      pbX=xS(i-1)+frac*(xS(i)-xS(i-1));pbYr=(i-1+frac).toFixed(1);break;
+    }
+  }
+  if(pbX!==null){
+    ctx.strokeStyle="#F5A300";ctx.lineWidth=2;ctx.setLineDash([6,4]);
+    ctx.beginPath();ctx.moveTo(pbX,pad.top+14);ctx.lineTo(pbX,pad.top+cH);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle="#F5A300";ctx.font="bold 10px 'Space Mono',monospace";
+    ctx.textAlign=pbX>W/2?"right":"left";
+    ctx.fillText("⬟ Payback Yr "+pbYr,pbX+(pbX>W/2?-8:8),pad.top+24);
+  } else {
+    ctx.fillStyle="#E53E5D";ctx.font="11px 'Outfit',sans-serif";ctx.textAlign="center";
+    ctx.fillText("No payback within project life",pad.left+cW/2,pad.top+20);
+  }
+
+  // Axis label
+  ctx.fillStyle="#8C9BAE";ctx.font="10px 'Outfit',sans-serif";ctx.textAlign="center";
+  ctx.fillText("Year",pad.left+cW/2,H-4);
+  ctx.save();ctx.translate(12,pad.top+cH/2);ctx.rotate(-Math.PI/2);ctx.fillText("Cumulative Cash (USD)",0,0);ctx.restore();
+}
+
+
+// ══════════════════════════════════════════════════
+// 1. MASS ↔ VOLUME
+// ══════════════════════════════════════════════════
+const MASS_KG={kg:1,g:0.001,"tonne (metric)":1000,lb:0.453592,lbmol:2.01588};
+const VOL_KG={"Nm³ (NTP)":H2.RHO_NTP,"Sm³ (STP)":H2.RHO_STP,"m³ (20°C)":H2.RHO_20,"L (NTP)":H2.RHO_NTP/1000,"Litres (liquid)":H2.RHO_LIQ/1000,"ft³ (NTP)":H2.RHO_NTP/35.3147};
+
+function calcMV(){
+  const raw=gv("mv-mass"),unit=g("mv-mu").value;if(raw<=0){g("mv-vol-res").innerHTML="";return;}
+  const kg=raw*(MASS_KG[unit]||1);
+  g("mv-vol-res").innerHTML=[
+    {cond:"NTP (0°C, 1 atm)",val:fmt(kg/H2.RHO_NTP,4)+" Nm³",sub:fmt(kg/H2.RHO_NTP*1000,2)+" L",col:"var(--green)"},
+    {cond:"STP (15°C, 1 atm)",val:fmt(kg/H2.RHO_STP,4)+" Sm³",sub:fmt(kg/H2.RHO_STP*1000,2)+" L",col:"var(--blue)"},
+    {cond:"Standard (20°C, 1 atm)",val:fmt(kg/H2.RHO_20,4)+" m³",sub:fmt(kg/H2.RHO_20*1000,2)+" L",col:"var(--teal)"},
+    {cond:"Liquid H₂ (−252.9°C)",val:fmt(kg/H2.RHO_LIQ*1000,3)+" L",sub:fmt(kg/H2.RHO_LIQ,6)+" m³",col:"var(--purple)"},
+  ].map(r=>`<div class="mv-box"><div class="mv-cond">${r.cond}</div><div class="mv-val" style="color:${r.col}">${r.val}</div><div class="mv-sub">${r.sub}</div></div>`).join("");
+}
+function calcVM(){
+  const raw=gv("mv-vol"),unit=g("mv-vu").value;if(raw<=0){g("mv-mass-res").innerHTML="";return;}
+  const kg=raw*(VOL_KG[unit]||H2.RHO_NTP);
+  g("mv-mass-res").innerHTML=[
+    {cond:"Mass",val:fmt(kg,5)+" kg",sub:fmt(kg*1000,2)+" g",col:"var(--green)"},
+    {cond:"Metric tonnes",val:fmt(kg/1000,7)+" t",sub:fmt(kg/907.185,7)+" short tons",col:"var(--blue)"},
+    {cond:"Pounds",val:fmt(kg/0.453592,4)+" lb",sub:"",col:"var(--teal)"},
+    {cond:"Moles",val:fmt(kg/H2.MW*1000,3)+" mol",sub:fmt(kg/H2.MW,3)+" kmol",col:"var(--purple)"},
+  ].map(r=>`<div class="mv-box"><div class="mv-cond">${r.cond}</div><div class="mv-val" style="color:${r.col}">${r.val}</div><div class="mv-sub">${r.sub}</div></div>`).join("");
+}
+
+
+// ══════════════════════════════════════════════════
+// 2. IDEAL GAS
+// ══════════════════════════════════════════════════
+const T_CONV={"°C":t=>t+273.15,"°F":t=>(t-32)/1.8+273.15,"K":t=>t};
+const P_CONV={bar:1e5,MPa:1e6,kPa:1e3,psi:6894.76,atm:101325};
+function setGas(){const v=g("ig-gas").value;if(v!=="custom")g("ig-mw").value=v;calcIG();}
+function setIGMode(m,btn){
+  igMode=m;
+  document.querySelectorAll(".mbtn[id^='igm-']").forEach(b=>{b.classList.remove("on");b.style.borderColor="";b.style.color="";});
+  btn.classList.add("on");btn.style.borderColor="var(--blue)";btn.style.color="var(--blue)";
+  g("ig-knlbl").textContent={mass:"Mass (kg)",vol:"Volume (m³)",mol:"Moles (mol)",den:"Density (kg/m³)"}[m];
+  calcIG();
+}
+function calcIG(){
+  const T_K=(T_CONV[g("ig-tunit").value]||T_CONV["°C"])(gv("ig-tc"));
+  const P_Pa=gv("ig-p")*(P_CONV[g("ig-punit").value]||1e5);
+  const Z=parseFloat(g("ig-z").value)||1;
+  const Mkg=(parseFloat(g("ig-mw").value)||H2.MW)/1000;
+  const kn=parseFloat(g("ig-kn").value)||0;
+  if(kn<=0||P_Pa<=0||T_K<=0){g("ig-out").style.display="none";return;}
+  let n,V,mass;
+  if(igMode==="mass"){mass=kn;n=mass/Mkg;V=(n*Z*R_GAS*T_K)/P_Pa;}
+  else if(igMode==="vol"){V=kn;n=(P_Pa*V)/(Z*R_GAS*T_K);mass=n*Mkg;}
+  else if(igMode==="mol"){n=kn;mass=n*Mkg;V=(n*Z*R_GAS*T_K)/P_Pa;}
+  else{const rho=kn;n=(P_Pa*1)/(Z*R_GAS*T_K);mass=n*Mkg;V=mass/rho;n=(P_Pa*V)/(Z*R_GAS*T_K);mass=n*Mkg;}
+  const rho=mass/V;
+  g("ig-out-title").textContent=`Results at ${gv("ig-tc")}${g("ig-tunit").value}, ${gv("ig-p")} ${g("ig-punit").value}, Z=${Z}`;
+  g("ig-metrics").innerHTML=
+    mHtml(fmt(mass,5),"kg","Mass","var(--blue)")+mHtml(fmt(n,4),"mol","Moles","var(--blue)")+
+    mHtml(fmt(V,5),"m³","Volume at conditions","var(--green)")+mHtml(fmt(rho,5),"kg/m³","Density","var(--green)")+
+    mHtml(fmt(1/rho,4),"m³/kg","Specific Volume","var(--teal)")+
+    mHtml(fmt(mass/H2.RHO_NTP,4),"Nm³","Equiv. NTP Volume","var(--purple)")+
+    mHtml(fmt(mass/H2.RHO_STP,4),"Sm³","Equiv. STP Volume","var(--purple)")+
+    mHtml(fmt(P_Pa/1e5,3),"bar","Actual Pressure","var(--amber)");
+  g("ig-refrows").innerHTML=[
+    {l:"NTP (0°C, 1 atm)",rho:H2.RHO_NTP},{l:"STP (15°C, 1 atm)",rho:H2.RHO_STP},{l:"Standard (20°C, 1 atm)",rho:H2.RHO_20},
+  ].map(r=>`<div class="rrow"><span class="rlbl">${r.l}</span><span class="rval">${fmt(mass/r.rho,4)} m³ <span class="rsub">${fmt(mass/r.rho*1000,2)} L</span></span></div>`).join("");
+  g("ig-out").style.display="block";
+}
+
+
+// ══════════════════════════════════════════════════
+// 3. ENERGY CONTENT
+// ══════════════════════════════════════════════════
+function setENMode(m,btn){
+  enMode=m;
+  document.querySelectorAll(".mbtn[id^='enm-']").forEach(b=>{b.classList.remove("on");b.style.borderColor="";b.style.color="";});
+  btn.classList.add("on");btn.style.borderColor="var(--green)";btn.style.color="var(--green)";
+  g("en-lbl").textContent={kg:"Hydrogen Mass (kg)",nm3:"Volume (Nm³ at NTP — 0°C, 1 atm)",sm3:"Volume (Sm³ at STP — 15°C, 1 atm)"}[m];
+  calcEN();
+}
+function calcEN(){
+  const qty=gv("en-qty");
+  let kg=qty;
+  if(enMode==="nm3")kg=qty*H2.RHO_NTP;
+  else if(enMode==="sm3")kg=qty*H2.RHO_STP;
+
+  g("en-kg-equiv").value=fmt(kg,5)+" kg";
+
+  // Hero totals
+  const lhvKWh=kg*H2.LHV_KWH;
+  const hhvKWh=kg*H2.HHV_KWH;
+  g("en-lhv-tot").innerHTML=fmt(lhvKWh,3)+' <span class="en-h-unit">kWh</span>';
+  g("en-hhv-tot").innerHTML=fmt(hhvKWh,3)+' <span class="en-h-unit">kWh</span>';
+  g("en-lhv-pke").textContent=`33.33 kWh per kg H₂  |  120.0 MJ per kg`;
+  g("en-hhv-pke").textContent=`39.39 kWh per kg H₂  |  141.8 MJ per kg`;
+
+  // Table rows: [unit, per-kg LHV factor from kWh, per-kg HHV factor from kWh]
+  const rows=[
+    {u:"kWh",    f:1,            note:"Standard electrical unit"},
+    {u:"MWh",    f:0.001,        note:"Megawatt-hour"},
+    {u:"MJ",     f:3.6,          note:"Megajoule = 3.6 kWh"},
+    {u:"GJ",     f:0.0036,       note:"Gigajoule = 3,600 kWh"},
+    {u:"MMBTU",  f:1/293.071,    note:"Million BTU (US gas market)"},
+    {u:"BTU",    f:1/0.000293071,note:"British Thermal Unit"},
+    {u:"kcal",   f:1/0.001163,   note:"Kilocalorie"},
+    {u:"Mcal",   f:1/1.163,      note:"Megacalorie"},
+    {u:"toe",    f:1/11630,      note:"Tonne oil equiv. = 11,630 kWh"},
+    {u:"Nm³ H₂ equiv.",f:1/2.996,note:"Normalised volumetric equivalent"},
+  ];
+
+  g("en-tbody").innerHTML=rows.map(r=>{
+    const perLHV=H2.LHV_KWH*r.f;  // per kg, LHV
+    const perHHV=H2.HHV_KWH*r.f;  // per kg, HHV
+    const totLHV=lhvKWh*r.f;
+    const totHHV=hhvKWh*r.f;
+    return`<tr>
+      <td class="unit-col" style="font-family:var(--ff);font-weight:600">${r.u}</td>
+      <td class="perkg" style="color:var(--blue);font-size:11px">${fmt(perLHV,4)}</td>
+      <td class="perkg" style="color:var(--green-d);font-size:11px">${fmt(perHHV,4)}</td>
+      <td class="lhv-col">${fmt(totLHV,4)}</td>
+      <td class="hhv-col">${fmt(totHHV,4)}</td>
+    </tr>`;
+  }).join("");
+}
+
+
+// ══════════════════════════════════════════════════
+// 4. ELECTROLYZER
+// ══════════════════════════════════════════════════
+function buildElRE(){
+  g("el-regrid").innerHTML=Object.entries(RE).map(([k,c])=>
+    `<div class="recard ${k===elRE?"on":""}" onclick="selElRE('${k}')">
+       <div class="rc-lbl">${k}</div><div class="rc-cuf">CUF ${(c*100).toFixed(0)}%</div>
+     </div>`).join("");
+}
+function selElRE(name){elRE=name;buildElRE();g("el-cuf").value=RE[name].toFixed(2);g("el-cufpct").value=Math.round(RE[name]*100);calcEl();}
+function syncCUF(){const v=parseFloat(g("el-cuf").value)||0.22;g("el-cufpct").value=Math.round(v*100);calcEl();}
+function syncCUFpct(){const v=parseFloat(g("el-cufpct").value)||22;g("el-cuf").value=(v/100).toFixed(2);calcEl();}
+
+function selElType(t){
+  elType=t;const info=EL[t];
+  Object.keys(EL).forEach(k=>{const c=g("elt-"+k);if(!c)return;c.classList.remove("on");c.style.borderColor="";c.style.background="";c.querySelector(".tc-lbl").style.color="";c.querySelector(".tc-lbl").style.fontWeight="500";});
+  const el=g("elt-"+t);el.classList.add("on");el.style.borderColor=info.color;el.style.background=info.bg;el.querySelector(".tc-lbl").style.color=info.color;el.querySelector(".tc-lbl").style.fontWeight="700";
+  g("el-banner").style.background=info.bg;
+  g("el-banner").innerHTML=`<strong style="color:${info.color}">${info.label}</strong> — ${info.desc}<br><span style="font-size:10px;color:var(--t3)">Temp: ${info.temp} | Pressure: ${info.press} | SEC: ${info.smin}–${info.smax} kWh/kg</span>`;
+  g("el-sec").value=info.sec;g("el-cs").value=info.cs;g("el-cb").value=info.cb;g("el-op").value=info.op;
+  g("el-secnote").textContent=`SEC range for ${info.label}: ${info.smin}–${info.smax} kWh/kg. BOP = Balance of Plant (pumps, controls, transformer losses).`;
+  calcEl();
+}
+function selElMode(m,btn){
+  elMode=m;const info=EL[elType];
+  document.querySelectorAll(".mbtn[id^='elm-']").forEach(b=>{b.classList.remove("on");b.style.borderColor="";b.style.color="";});
+  btn.classList.add("on");btn.style.borderColor=info.color;btn.style.color=info.color;
+  g("el-ml").textContent=m==="h2"?"H₂ Production Target (kg/day)":"Stack Size (kW)";
+  calcEl();
+}
+
+function calcEl(){
+  const info=EL[elType];
+  const sec=gv("el-sec")||info.sec,bop=gv("el-bop"),avail=(gv("el-avail")||95)/100;
+  const cuf=parseFloat(g("el-cuf").value)||0.22,yr=gv("el-yr")||20;
+  const cs=gv("el-cs"),cb=gv("el-cb"),te=parseFloat(g("el-te").value)||0.04;
+  const tw=parseFloat(g("el-tw").value)||1.0,op=parseFloat(g("el-op").value)||3.0;
+  const h2px=parseFloat(g("el-h2px").value)||4.0,dr=(gv("el-dr")||8)/100;
+
+  const bopMul=1/(1-bop/100),annHrs=8760*avail;
+  let stackKW,h2Day;
+  if(elMode==="h2"){h2Day=gv("el-main");stackKW=(h2Day/24)*sec;}
+  else{stackKW=gv("el-main");h2Day=(stackKW/sec)*24;}
+  const sysKW=stackKW*bopMul,reKW=sysKW/cuf;
+  const annH2=h2Day*365*avail,annEn=sysKW*annHrs;
+
+  const cStack=stackKW*cs,cBOP=stackKW*cb,cTotal=cStack+cBOP;
+  const oFixed=cTotal*op/100,oElec=annEn*te;
+  const oWater=(annH2*H2.WATER/1000)*tw;
+  const lifeYrs=info.lh/annHrs,oStack=cStack/lifeYrs;
+  const annCost=oFixed+oElec+oWater+oStack;
+  const annRev=annH2*h2px,annCF=annRev-annCost;
+  const lcoh=annH2>0?(cTotal/yr+annCost)/annH2:0;
+
+  const npv=calcNPV(cTotal,annCF,dr,yr);
+  const irr=calcIRR(cTotal,annCF,yr);
+  const pb=simplePayback(cTotal,annCF);
+
+  const c=info.color;
+  g("el-metrics").innerHTML=
+    mHtml(fmt(stackKW/1000,3),"MW","Stack Power",c)+mHtml(fmt(sysKW/1000,3),"MW","System Power (+ BOP)",c)+
+    mHtml(fmt(reKW/1000,3),"MW","Renewable Capacity","#00B37A")+mHtml(fmt(h2Day,1),"kg/day","H₂ Production",c)+
+    mHtml(fmt(h2Day/H2.RHO_NTP,0),"Nm³/day","H₂ Volume at NTP",c)+mHtml(fmt(annH2/1000,2),"t/yr","Annual H₂ Output",c)+
+    mHtml(fmt(annEn/1e6,2),"GWh/yr","Annual Energy Used","#8C9BAE")+mHtml(fmt(annHrs,0),"hr/yr","Operating Hours","#8C9BAE");
+
+  g("el-capex").innerHTML=
+    rHtml("Electrolyzer Stack",fmtM(cStack),`${fmt(stackKW/1000,3)} MW × $${cs}/kW`)+
+    rHtml("Balance of Plant (BOP)",fmtM(cBOP),`$${cb}/kW`)+
+    `<div class="ctotal"><span class="ctl">Total CAPEX</span><span class="ctv">${fmtM(cTotal)}</span></div>
+     <p class="note">Specific: ${fmtM(annH2>0?cTotal/(annH2/1000):0)}/t-yr capacity | ${fmtM(reKW>0?cTotal/(reKW/1000):0)}/MW renewable</p>`;
+
+  g("el-opex").innerHTML=
+    rHtml("Fixed O&M",fmtM(oFixed),`${op}% of CAPEX`)+
+    rHtml("Electricity",fmtM(oElec),`${fmt(annEn/1e6,2)} GWh × $${te}/kWh`)+
+    rHtml("Process Water",fmtM(oWater),`${fmt(annH2*H2.WATER/1000,0)} m³/yr × $${tw}/m³`)+
+    rHtml("Stack Replacement (amortised)",fmtM(oStack),`over ${fmt(lifeYrs,1)} yr stack life`)+
+    `<div class="div"></div>`+
+    rHtml("Total Annual OPEX",fmtM(annCost),"")+
+    rHtml("H₂ Revenue (gross)",fmtM(annRev),`${fmt(annH2/1000,2)} t × $${h2px}/kg`)+
+    rHtml("Net Annual Cash Flow",fmtM(annCF),annCF>=0?"▲ positive":"▼ negative")+
+    `<div class="lcox"><div><div class="lcx-l">LCOH (Levelised Cost of H₂) — ${yr} yr</div></div><div><span class="lcx-n">$${fmt(lcoh,2)}</span><span class="lcx-u">/kg H₂</span></div></div>
+     <p class="note">LCOH = (CAPEX÷${yr}yr + Annual OPEX) ÷ Annual H₂. Excludes compression, storage, dispensing.</p>`;
+
+  g("el-npvgrid").innerHTML=npvHtml(npv,irr,pb,yr,"LCOH — Levelised Cost of H₂","$"+fmt(lcoh,2),"/kg H₂");
+  g("el-betable").innerHTML=beTableHtml(cTotal,annCost,annH2,"H₂ price needed","/ kg H₂",()=>0,pb);
+  setTimeout(()=>drawChart("el-chart",cTotal,annRev,annCost,yr,c,8,12),50);
+}
+
+
+// ══════════════════════════════════════════════════
+// 5. FUEL CELL
+// ══════════════════════════════════════════════════
+function selFCType(t){
+  fcType=t;const info=FC[t];
+  Object.keys(FC).forEach(k=>{const c=g("fct-"+k);if(!c)return;c.classList.remove("on");c.style.borderColor="";c.style.background="";c.querySelector(".tc-lbl").style.color="";c.querySelector(".tc-lbl").style.fontWeight="500";});
+  const el=g("fct-"+t);el.classList.add("on");el.style.borderColor=info.color;el.style.background=info.bg;el.querySelector(".tc-lbl").style.color=info.color;el.querySelector(".tc-lbl").style.fontWeight="700";
+  g("fc-banner").style.background=info.bg;
+  g("fc-banner").innerHTML=`<strong style="color:${info.color}">${info.label}</strong> — ${info.desc}<br><span style="font-size:10px;color:var(--t3)">Temp: ${info.temp} | App: ${info.app}</span>`;
+  g("fc-ee").value=info.ee;g("fc-he").value=info.he;g("fc-cx").value=info.cx;g("fc-op").value=info.op;
+  calcFC();
+}
+function selFCMode(m,btn){
+  fcMode=m;const info=FC[fcType];
+  document.querySelectorAll(".mbtn[id^='fcm-']").forEach(b=>{b.classList.remove("on");b.style.borderColor="";b.style.color="";});
+  btn.classList.add("on");btn.style.borderColor=info.color;btn.style.color=info.color;
+  g("fc-ml").textContent={kg:"H₂ Flow Rate (kg/hr)",nm3:"H₂ Flow Rate (Nm³/hr)",kw:"Thermal Input LHV (kW)"}[m];
+  calcFC();
+}
+
+function calcFC(){
+  const info=FC[fcType];
+  let thIn;const raw=gv("fc-inp");
+  if(fcMode==="kg")thIn=raw*H2.LHV_KWH;
+  else if(fcMode==="nm3")thIn=raw*H2.RHO_NTP*H2.LHV_KWH;
+  else thIn=raw;
+
+  const ee=(gv("fc-ee")||0)/100,he=(gv("fc-he")||0)/100;
+  const bop=(gv("fc-bop")||0)/100,avail=(gv("fc-av")||90)/100;
+  const cx=gv("fc-cx")||info.cx,h2c=parseFloat(g("fc-h2c").value)||5.0;
+  const op=parseFloat(g("fc-op").value)||3.5,epx=parseFloat(g("fc-epx").value)||0.12;
+  const hpx=parseFloat(g("fc-hpx").value)||0.03,dr=(gv("fc-dr")||8)/100,yr=gv("fc-yr")||20;
+  const annHrs=8760*avail;
+
+  const eNet=thIn*ee*(1-bop),hOut=thIn*he;
+  const sysEff=thIn>0?((eNet+hOut)/thIn)*100:0;
+  const h2KgHr=thIn/H2.LHV_KWH;
+  const annElec=eNet*annHrs,annHeat=hOut*annHrs,annH2=h2KgHr*annHrs;
+
+  const cTotal=eNet*cx;
+  const oFixed=cTotal*op/100,oH2=annH2*h2c;
+  const lifeYrs=info.lh/annHrs,oStack=(cTotal*0.5)/lifeYrs;
+  const annCost=oFixed+oH2+oStack;
+  const annRev=annElec*epx+annHeat*hpx,annCF=annRev-annCost;
+  const lcoe=annElec>0?(cTotal/yr+annCost)/annElec*100:0;
+
+  const npv=calcNPV(cTotal,annCF,dr,yr);
+  const irr=calcIRR(cTotal,annCF,yr);
+  const pb=simplePayback(cTotal,annCF);
+
+  const c=info.color;
+  g("fc-metrics").innerHTML=
+    mHtml(fmt(eNet/1000,3),"MW","Net Electrical Output",c)+mHtml(fmt(hOut/1000,3),"MW th","Heat Recovery","#F5A300")+
+    mHtml(fmt(sysEff,1),"%","System Efficiency (CHP)","#00B37A")+mHtml(fmt(thIn/1000,3),"MW LHV","H₂ Thermal Input","#8C9BAE")+
+    mHtml(fmt(h2KgHr,2),"kg/hr","H₂ Consumption",c)+mHtml(fmt(h2KgHr*24,1),"kg/day","H₂ Consumption",c)+
+    mHtml(fmt(annElec/1e6,2),"GWh/yr","Annual Generation",c)+mHtml(fmt(annH2/1000,2),"t/yr","Annual H₂ Consumed","#8C9BAE");
+
+  const ep=thIn>0?(eNet/thIn*100):0,hp=thIn>0?(hOut/thIn*100):0,lp=Math.max(0,100-ep-hp);
+  g("sk-e").style.width=ep+"%";g("sk-e").style.background=c;g("sk-e").textContent=ep>8?fmt(ep,1)+"% elec":"";
+  g("sk-h").style.width=hp+"%";g("sk-h").textContent=hp>5?fmt(hp,1)+"% heat":"";
+  g("sk-l").textContent=fmt(lp,1)+"% loss";
+  g("fc-snote").textContent=`Electrical: ${fmt(ep,1)}% | Heat: ${fmt(hp,1)}% | Losses: ${fmt(lp,1)}% | System CHP eff: ${fmt(sysEff,1)}%`;
+
+  g("fc-capex").innerHTML=
+    rHtml("Fuel Cell System",fmtM(cTotal),`${fmt(eNet/1000,3)} MW × $${cx}/kW`)+
+    `<div class="ctotal"><span class="ctl">Total System CAPEX</span><span class="ctv">${fmtM(cTotal)}</span></div>
+     <p class="note">Excludes H₂ storage, grid connection, civil works. Stack ~50% of system cost.</p>`;
+
+  g("fc-opex").innerHTML=
+    rHtml("Fixed O&M",fmtM(oFixed),`${op}% of CAPEX`)+
+    rHtml("H₂ Fuel",fmtM(oH2),`${fmt(annH2/1000,2)} t/yr × $${h2c}/kg`)+
+    rHtml("Stack Replacement (amortised)",fmtM(oStack),`50% CAPEX ÷ ${fmt(lifeYrs,1)}-yr stack life`)+
+    `<div class="div"></div>`+
+    rHtml("Total Annual OPEX",fmtM(annCost),"")+
+    rHtml("Electricity Revenue",fmtM(annElec*epx),`${fmt(annElec/1e6,2)} GWh × $${epx}/kWh`)+
+    rHtml("Heat Revenue",fmtM(annHeat*hpx),`${fmt(annHeat/1e6,2)} GWh th × $${hpx}/kWh`)+
+    rHtml("Total Annual Revenue",fmtM(annRev),"")+
+    rHtml("Net Annual Cash Flow",fmtM(annCF),annCF>=0?"▲ positive":"▼ negative")+
+    `<div class="lcox"><div><div class="lcx-l">LCOE (Levelised Cost of Electricity) — ${yr} yr</div></div><div><span class="lcx-n">${fmt(lcoe,2)}¢</span><span class="lcx-u">/kWh</span></div></div>
+     <p class="note">LCOE = (CAPEX÷${yr}yr + Annual OPEX) ÷ Annual electricity generation × 100.</p>`;
+
+  g("fc-npvgrid").innerHTML=npvHtml(npv,irr,pb,yr,"LCOE — Levelised Cost of Electricity",fmt(lcoe,2)+"¢","/kWh");
+  // BE table: what elec price needed for 8–12yr payback?
+  g("fc-betable").innerHTML=beTableHtml(cTotal,annCost,annElec,"Electricity price needed","/ kWh",()=>0,pb);
+  setTimeout(()=>drawChart("fc-chart",cTotal,annRev,annCost,yr,c,8,12),50);
+}
+
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+function init(){
+  calcMV();calcVM();
+  setENMode("kg",g("enm-kg"));
+  setIGMode("mass",g("igm-mass"));
+  buildElRE();selElType("Alkaline");
+  selFCType("PEMFC");
+  window.addEventListener("resize",()=>{
+    if(g("sec-el").classList.contains("on"))calcEl();
+    if(g("sec-fc").classList.contains("on"))calcFC();
+  });
+}
+init();
+</script>
+</body>
+</html>
